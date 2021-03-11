@@ -4,32 +4,31 @@
 #include <string.h>
 #include <stddef.h>
 
-static const char *test_template = "\
-#include \"vendor/unity.h\"
-#include \"../src/%s.h\"
-
-void setUp(void)
-{
-}
-
-void tearDown(void)
-{
-}
-
-static void test_lib(void)
-{
-  TEST_EQUAL(\"Hello, World!\", hello());
-}
-
-int main(void)
-{
-   UnityBegin(\"test/test_%s.c\");
-
-   RUN_TEST(test_lib);
-
-   return UnityEnd();
-}
-"
+static const char *test_template =
+  "#include \"vendor/unity.h\"\n"
+  "#include \"../src/%s.h\"\n"
+  "\n"
+  "void setUp(void)\n"
+  "{\n"
+  "}\n"
+  "\n"
+  "void tearDown(void)\n"
+  "{\n"
+  "}\n"
+  "\n"
+  "static void test_lib(void)\n"
+  "{\n"
+  "  TEST_EQUAL(\"Hello, World!\", hello());\n"
+  "}\n"
+  "\n"
+  "int main(void)\n"
+  "{\n"
+  "   UnityBegin(\"test/test_%s.c\");\n"
+  "\n"
+  "   RUN_TEST(test_lib);\n"
+  "\n"
+  "   return UnityEnd();\n"
+  "}\n";
 
 int write_test(const char *fname, const char *project)
 {
