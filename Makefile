@@ -9,9 +9,17 @@ TARGET = cman
 all: cman
 	@echo "make all finished!"
 
-cman: main.c src/*.h src/*.c
+cman: cargs $(TARGET).c src/*.h src/*.c
 	@echo "Building 'cman'..."
-	$(CC) $(CFLAGS) main.c src/*.c -o $(TARGET) $(LFLAGS)
+	$(CC) -c $(CFLAGS) $(TARGET).c src/*.c
+	$(CC) *.o -o $(TARGET) $(LFLAGS)
+
+CARGS_INCLUDE = vendor/cargs/include
+CARGS_SRC = vendor/cargs/src
+
+cargs: $(CARGS_INCLUDE) $(CARGS_SRC)/cargs.c
+	@echo "Building 'cargs'..."
+	$(CC) -c $(CFLAGS) $(CARGS_SRC)/cargs.c -I$(CARGS_INCLUDE)
 
 clean:
-	@rm -rf $(TARGET) *.o *.a *.out test_*
+	@rm -rf *.o *.a *.out test_* cargs.*
