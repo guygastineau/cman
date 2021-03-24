@@ -3,3 +3,6 @@
 *.o
 
 test_*.c
+
+# The executable
+cman
