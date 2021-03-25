@@ -1,4 +1,5 @@
 #include "src/test.h"
+#include "src/write_unity.h"
 #include "src/embed_common.h"
 
 #include "vendor/cargs/include/cargs.h"
@@ -7,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #define ASSERT_CLI_CONF_REF(CONF) \
   assert((CONF) && "NULL pointer expected address of struct cli_config")
@@ -123,13 +126,27 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
+  const char *testdir = mk_testdir(cli_conf.name);
+  if (!testdir) {
+    return EXIT_FAILURE;
+  }
+
   char *test_name = conf_get_test_name(&cli_conf);
 
-  fprintf(stderr, "Writing test file '%s'...\n", test_name);
+  fprintf(stderr, "Writing test file '%s/%s'...\n", testdir, test_name);
 
-  write_test(test_name, cli_conf.name);
+  if (write_test(testdir, test_name, cli_conf.name)) {
+    fputs("Aborting ...", stderr);
+    return EXIT_FAILURE;
+  }
 
-  puts("Done!");
+  fprintf(stderr, "Writing unity test files...\n");
+  if (write_unity_files(testdir)) {
+    fputs("Aborting ...", stderr);
+    return EXIT_FAILURE;
+  }
+
+  fputs("Done!", stderr);
 
   free(test_name);
   return EXIT_SUCCESS;

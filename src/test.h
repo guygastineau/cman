@@ -1,6 +1,8 @@
 #ifndef TEST_H
 #define TEST_H
 
-int write_test(const char *fname, const char *project);
+const char *mk_testdir(const char *root);
+
+int write_test(const char *testdir, const char *fname, const char *project);
 
 #endif // TEST_H
