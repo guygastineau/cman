@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+find . -type f \
+     -not -path "./.git*" \
+     -not -path "./vendor*" \
+     -not -path "./cman" \
+     -print0 | wc -l --files0-from=-
