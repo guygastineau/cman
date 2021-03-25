@@ -38,12 +38,12 @@ static const char *test_template =
 
 int write_test(const char *testdir, const char *fname, const char *project)
 {
-  if (snprintf(path, 1024, "%s/%s", testdir, fname)) {
+  if (snprintf(file, 1024, "%s/%s", testdir, fname)) {
     return -1;
   }
 
   FILE *dest;
-  dest = fopen(fname, "wb");
+  dest = fopen(file, "wb");
   if (dest == NULL) {
     fprintf(stderr, "cman error: couldn't open %s\n", fname);
     return -1;
