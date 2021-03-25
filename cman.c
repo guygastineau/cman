@@ -1,10 +1,19 @@
 #include "src/test.h"
+#include "src/embed_common.h"
 
 #include "vendor/cargs/include/cargs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+
+#define ASSERT_CLI_CONF_REF(CONF) \
+  assert((CONF) && "NULL pointer expected address of struct cli_config")
+
+struct cli_config {
+  const char *name;
+};
 
 // Command Line options parsing.
 static struct cag_option options[] = {
@@ -24,45 +33,19 @@ static struct cag_option options[] = {
   }
 };
 
-struct project_config {
-  const char *name;
-};
-
-int main(int argc, char **argv)
+char *conf_get_test_name(struct cli_config *conf)
 {
-  // For use with FAIL
   const char *error = NULL;
   char *test_name = NULL;
 
-  char ident;
-  cag_option_context ctx;
+  ASSERT_CLI_CONF_REF(conf);
 
-  struct project_config conf = { NULL };
-
-  // Iterate through the options.
-  cag_option_prepare(&ctx, options, CAG_ARRAY_SIZE(options), argc, argv);
-  while (cag_option_fetch(&ctx)) {
-    ident = cag_option_get(&ctx);
-    switch (ident) {
-    case 'n':
-      conf.name = cag_option_get_value(&ctx);
-      break;
-    case 'h':
-      puts("Usage: cman [OPTION]...");
-      puts("");
-      puts("Start sane C projects with ease!");
-      puts("");
-      cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
-      return EXIT_SUCCESS;
-    }
-  }
-
-  if (!conf.name) {
+  if (!conf->name) {
     fputs("cman error: No project name provided!", stderr);
-    return EXIT_FAILURE;
+    return NULL;
   }
 
-  size_t test_name_len = strlen(conf.name) + strlen("test_.c");
+  size_t test_name_len = strlen(conf->name) + strlen("test_.c");
   test_name = malloc(test_name_len + 1);
   if (!test_name) {
     error = "cman error: failed to allocate space for test name!";
@@ -70,7 +53,7 @@ int main(int argc, char **argv)
   }
 
   int written;
-  if ((written = sprintf(test_name, "test_%s.c", conf.name)) < 0) {
+  if ((written = sprintf(test_name, "test_%s.c", conf->name)) < 0) {
     error = "cman error: failed to create test name!";
     goto FAIL;
   }
@@ -80,16 +63,74 @@ int main(int argc, char **argv)
     goto FAIL;
   }
 
-  printf("Writing test file '%s'...\n", test_name);
-  write_test(test_name, conf.name);
+  return test_name;
+
+ FAIL:
+  fputs(error, stderr);
+  free(test_name);
+  return NULL;
+}
+
+enum CMAN_CMD {
+  CM_OK, CM_HELP, CM_ERR
+};
+
+void usage()
+{
+  fputs("Usage: cman [OPTION]...\n", stderr);
+  fputs("Start sane C projects with ease!", stderr);
+  cag_option_print(options, CAG_ARRAY_SIZE(options), stderr);
+}
+
+enum CMAN_CMD conf_init(struct cli_config *conf, int argc, char **argv)
+{
+  ASSERT_CLI_CONF_REF(conf);
+
+  char ident;
+  cag_option_context ctx;
+
+  // Iterate through the options.
+  cag_option_prepare(&ctx, options, CAG_ARRAY_SIZE(options), argc, argv);
+  while (cag_option_fetch(&ctx)) {
+    ident = cag_option_get(&ctx);
+    switch (ident) {
+    case 'n':
+      conf->name = cag_option_get_value(&ctx);
+      break;
+    case 'h':
+      return CM_HELP;
+    }
+  }
+  return CM_OK;
+}
+
+int main(int argc, char **argv)
+{
+  struct cli_config cli_conf = { NULL };
+  switch (conf_init(&cli_conf, argc, argv)) {
+  case CM_OK:
+    break;
+  case CM_ERR:
+    fputs("Unexpected error processing command line arguments", stderr);
+    return EXIT_FAILURE;
+  case CM_HELP:
+    usage();
+    return EXIT_SUCCESS;
+  }
+
+  if (!cli_conf.name) {
+    fputs("cman error: No project name provided!", stderr);
+    return EXIT_FAILURE;
+  }
+
+  char *test_name = conf_get_test_name(&cli_conf);
+
+  fprintf(stderr, "Writing test file '%s'...\n", test_name);
+
+  write_test(test_name, cli_conf.name);
 
   puts("Done!");
 
   free(test_name);
   return EXIT_SUCCESS;
-
- FAIL:
-  fputs(error, stderr);
-  free(test_name);
-  return EXIT_FAILURE;
 }

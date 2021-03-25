@@ -1,0 +1,75 @@
+#! /usr/bin/env bash
+
+# Get the project root
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/..
+
+BIN="$ROOT"/bin
+
+# Our hex converter program.
+HEX="$BIN"/hex
+
+SRC="$ROOT"/src
+
+basenames () {
+    for elt in "$@"; do
+        printf '%s ' "$(basename "$elt")"
+    done
+}
+
+embed_file ()
+{
+    if [[ $# -ne 1 ]]; then
+        echo "embed_file: insufficient arguments" >&2
+        exit 1
+    fi
+
+    local src="$1"
+    local ext="${src##*.}"
+    local name="$(basename "$src" | cut -d. -f1)"_"$ext"
+    local header_tag=EMBED_"${name^^}"_H
+
+    local header_file=embed_"$name".h
+    local impl_file=embed_"$name".c
+
+    local buffer_name="$name"_bytes
+    local buffer_bytes="$($HEX "$src")"
+    local buffer_size="$(echo "$buffer_bytes" | tr -cd , | wc -c)"
+
+    # Write the header file.
+    cat <<-EOF > "$SRC"/"$header_file"
+#ifndef ${header_tag}
+#define ${header_tag}
+
+const static unsigned char ${buffer_name}[${buffer_size}];
+
+#endif // ${header_tag}
+EOF
+
+    # Write the beginning of the implementation file.
+    cat <<-EOF > "$SRC"/"$impl_file"
+#include "${header_file}"
+
+const static unsigned char ${buffer_name}[] =
+{
+  ${buffer_bytes}
+};
+EOF
+}
+
+for file in "$@"; do
+    embed_file "$file"
+done
+
+# now make the embed_common header
+
+rm -f "$SRC"/embed_common.h
+includes="$(printf '#include "%s"\n' $(basenames ${SRC}/embed_*.h))"
+
+cat <<-EOF > "$SRC"/embed_common.h
+#ifndef EMBED_COMMON
+#define EMBED_COMMON
+
+${includes}
+
+#endif // EMBED_COMMON
+EOF

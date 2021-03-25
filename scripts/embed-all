@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+# Get the project root
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"/..
+
+SCRIPTS="$ROOT"/scripts
+
+$SCRIPTS/embed vendor/unity/src/unity.{c,h} vendor/unity/src/unity_internals.h
