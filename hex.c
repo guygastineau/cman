@@ -70,10 +70,10 @@ int main(int argc, const char **argv)
         fclose(src);
         return error("Failed reading file stream");
       }
-      if (dump(read) < 0) {
-        fclose(src);
-        return error("Failed writing to stdout");
-      }
+    }
+    if (dump(read) < 0) {
+      fclose(src);
+      return error("Failed writing to stdout");
     }
   }
   int err = ferror(src);
