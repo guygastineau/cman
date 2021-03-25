@@ -54,15 +54,17 @@ int write_unity_files(const char *testdir)
     return -1;
   }
 
-  if (write_file(path_buff, "unity.h", sizeof(unity_h_bytes), unity_h_bytes)) {
+  if (write_file(path_buff, "unity.h",
+                 unity_h_bytes_len(), get_unity_h_bytes())) {
     return -1;
   }
-  if (write_file(path_buff, "unity.c", sizeof(unity_c_bytes), unity_c_bytes)) {
+  if (write_file(path_buff, "unity.c",
+                 unity_c_bytes_len(), get_unity_c_bytes())) {
     return -1;
   }
   if (write_file(path_buff, "unity_internals.h",
-                 sizeof(unity_internals_h_bytes),
-                 unity_internals_h_bytes)) {
+                 unity_internals_h_bytes_len(),
+                 get_unity_internals_h_bytes())) {
     return -1;
   }
   return 1;
