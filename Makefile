@@ -25,4 +25,4 @@ hex: hex.c
 	$(CC) $(CFLAGS) hex.c -o bin/hex
 
 clean:
-	@rm -rf *.o *.a *.out test_* cargs.*
+	@rm -rf *.o *.a *.out test_* cargs.* *.hex
