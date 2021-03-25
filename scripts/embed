@@ -40,7 +40,10 @@ embed_file ()
 #ifndef ${header_tag}
 #define ${header_tag}
 
-const unsigned char ${buffer_name}[${buffer_size}];
+#include <stddef.h>
+
+size_t ${buffer_name}_len();
+const unsigned char *get_${buffer_name}();
 
 #endif // ${header_tag}
 EOF
@@ -49,10 +52,20 @@ EOF
     cat <<-EOF > "$SRC"/"$impl_file"
 #include "${header_file}"
 
-const unsigned char ${buffer_name}[] =
+static const unsigned char ${buffer_name}[${buffer_size}] =
 {
   ${buffer_bytes}
 };
+
+size_t ${buffer_name}_len()
+{
+  return ${buffer_size};
+}
+
+const unsigned char *get_${buffer_name}()
+{
+  return ${buffer_name};
+}
 EOF
 }
 

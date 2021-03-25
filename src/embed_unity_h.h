@@ -1,6 +1,9 @@
 #ifndef EMBED_UNITY_H_H
 #define EMBED_UNITY_H_H
 
-const unsigned char unity_h_bytes[951];
+#include <stddef.h>
+
+size_t unity_h_bytes_len();
+const unsigned char *get_unity_h_bytes();
 
 #endif // EMBED_UNITY_H_H

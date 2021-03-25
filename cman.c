@@ -1,6 +1,5 @@
 #include "src/test.h"
 #include "src/write_unity.h"
-#include "src/embed_common.h"
 
 #include "vendor/cargs/include/cargs.h"
 
