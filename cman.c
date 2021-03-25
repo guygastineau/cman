@@ -166,7 +166,7 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  fputs("Done!", stderr);
+  fputs("Done!\n", stderr);
 
   free(test_name);
   return EXIT_SUCCESS;

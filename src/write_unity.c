@@ -67,5 +67,5 @@ int write_unity_files(const char *testdir)
                  get_unity_internals_h_bytes())) {
     return -1;
   }
-  return 1;
+  return 0;
 }
