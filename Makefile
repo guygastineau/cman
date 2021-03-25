@@ -21,5 +21,8 @@ cargs: $(CARGS_INCLUDE) $(CARGS_SRC)/cargs.c
 	@echo "Building 'cargs'..."
 	$(CC) -c $(CFLAGS) $(CARGS_SRC)/cargs.c -I$(CARGS_INCLUDE)
 
+hex: hex.c
+	$(CC) $(CFLAGS) hex.c -o bin/hex
+
 clean:
 	@rm -rf *.o *.a *.out test_* cargs.*
