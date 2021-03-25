@@ -40,7 +40,7 @@ embed_file ()
 #ifndef ${header_tag}
 #define ${header_tag}
 
-const static unsigned char ${buffer_name}[${buffer_size}];
+const unsigned char ${buffer_name}[${buffer_size}];
 
 #endif // ${header_tag}
 EOF
@@ -49,7 +49,7 @@ EOF
     cat <<-EOF > "$SRC"/"$impl_file"
 #include "${header_file}"
 
-const static unsigned char ${buffer_name}[] =
+const unsigned char ${buffer_name}[] =
 {
   ${buffer_bytes}
 };
