@@ -86,10 +86,9 @@ int main(int argc, const char **argv)
     // Flush in case running it for fun without redirection.
     fflush(stdout);
     fflush(stderr);
-    fputs("========================================\n"
-          "Finished converting file contents to hex\n"
-          "========================================\n"
-          , stderr);
+    fprintf(stderr,
+            "Finished converting '%s' contents to hex\n"
+            , fname);
   }
   return EXIT_SUCCESS;
 }

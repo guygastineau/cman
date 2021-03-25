@@ -1,3 +1,6 @@
 [submodule "vendor/cargs"]
 	path = vendor/cargs
 	url = git@github.com:likle/cargs.git
+[submodule "vendor/unity"]
+	path = vendor/unity
+	url = git@github.com:ThrowTheSwitch/Unity.git
