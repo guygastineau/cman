@@ -28,10 +28,10 @@ static int mkvendor(const char *vendor_path)
 static int write_file(const char *dir, const char *name,
                       size_t len, const unsigned char *bytes)
 {
-  if (snprintf(file_buff, BUFF_SIZE, "%s/%s", dir, name)) {
+  if (snprintf(file_buff, BUFF_SIZE, "%s/%s", dir, name) < 0) {
     return -1;
   }
-  FILE *dest = fopen(file_buff, "wb");
+  FILE *dest = fopen(file_buff, "w");
   if (!dest) {
     return -1;
   }
@@ -46,7 +46,7 @@ static int write_file(const char *dir, const char *name,
 // Return 0 on success and -1 on failure. Check ERRNO for specifics.
 int write_unity_files(const char *testdir)
 {
-  if (snprintf(path_buff, BUFF_SIZE, "%s/%s", testdir, "vendor")) {
+  if (snprintf(path_buff, BUFF_SIZE, "%s/%s", testdir, "vendor") < 0) {
     return -1;
   }
 

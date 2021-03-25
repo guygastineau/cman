@@ -106,6 +106,19 @@ enum CMAN_CMD conf_init(struct cli_config *conf, int argc, char **argv)
   return CM_OK;
 }
 
+int mk_project_dir(const char *name)
+{
+  if (mkdir(name, 0777)) {
+    switch (errno) {
+    case EEXIST:
+      break;
+    default:
+      return -1;
+    }
+  }
+  return 0;
+}
+
 int main(int argc, char **argv)
 {
   struct cli_config cli_conf = { NULL };
@@ -125,6 +138,12 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
+  if (mk_project_dir(cli_conf.name)) {
+    fprintf(stderr, "Failed to create directory '%s' for new project!",
+            cli_conf.name);
+    return EXIT_FAILURE;
+  }
+
   const char *testdir = mk_testdir(cli_conf.name);
   if (!testdir) {
     return EXIT_FAILURE;
@@ -135,13 +154,15 @@ int main(int argc, char **argv)
   fprintf(stderr, "Writing test file '%s/%s'...\n", testdir, test_name);
 
   if (write_test(testdir, test_name, cli_conf.name)) {
-    fputs("Aborting ...", stderr);
+    perror("Arborting test writing");
+    free(test_name);
     return EXIT_FAILURE;
   }
 
   fprintf(stderr, "Writing unity test files...\n");
   if (write_unity_files(testdir)) {
-    fputs("Aborting ...", stderr);
+    perror("Aborting unity writing");
+    free(test_name);
     return EXIT_FAILURE;
   }
 

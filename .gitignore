@@ -10,3 +10,6 @@ cman
 *.hex
 
 /bin/
+
+# For tests
+/project/

@@ -38,7 +38,7 @@ static const char *test_template =
 
 int write_test(const char *testdir, const char *fname, const char *project)
 {
-  if (snprintf(file, 1024, "%s/%s", testdir, fname)) {
+  if (snprintf(file, 1024, "%s/%s", testdir, fname) < 0) {
     return -1;
   }
 
