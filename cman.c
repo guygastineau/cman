@@ -1,4 +1,5 @@
 #include "src/test.h"
+#include "src/make.h"
 #include "src/write_unity.h"
 
 #include "vendor/cargs/include/cargs.h"
@@ -141,6 +142,12 @@ int main(int argc, char **argv)
   if (mk_project_dir(cli_conf.name)) {
     fprintf(stderr, "Failed to create directory '%s' for new project!",
             cli_conf.name);
+    return EXIT_FAILURE;
+  }
+
+  fprintf(stderr, "Writing Makefile: '%s/Makefile", cli_conf.name);
+  if (write_makefile(cli_conf.name) < 0) {
+    perror("Aborting cman. Failed to write Makefile");
     return EXIT_FAILURE;
   }
 
