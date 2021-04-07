@@ -1,5 +1,12 @@
 #include "make.h"
 
+#include <stdio.h>
+#include <string.h>
+
+#define DEST_SIZE 1024
+
+static char file[DEST_SIZE];
+
 static const char *makefile =
   "CC = gcc\n"
   "\n"
@@ -51,3 +58,26 @@ static const char *makefile =
   "\n"
   "deep.clean: clean\n"
   "     @rm -rf *.o *.a *.S\n";
+
+int write_makefile(const char *project)
+{
+  if (!project) {
+    return -1;
+  }
+  if (strlen(project) + strlen("/Makefile") + 1 >  DEST_SIZE) {
+    return -1;
+  }
+  if (snprintf(file, DEST_SIZE, "%s/%s", project, "Makefile") < 0) {
+    return -1;
+  }
+
+  FILE *dest;
+  dest = fopen(file, "wb");
+  if (dest == NULL) {
+    fprintf(stderr, "cman error: couldn't open %s\n", file);
+    return -1;
+  }
+  fprintf(dest, makefile, project);
+  fclose(dest);
+  return 0;
+}
