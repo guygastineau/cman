@@ -28,7 +28,7 @@ static const char *makefile =
   "ASANFLAGS += -fno-omit-frame-pointer\n"
   "\n"
   "all: build test main\n"
-  "      @echo \"All finished!\"\n"
+  "\t@echo \"All finished!\"\n"
   "\n"
   "test: tests.out\n"
   "\t@./tests.out\n"

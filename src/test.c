@@ -24,7 +24,7 @@ static const char *test_template =
   "\n"
   "static void test_lib(void)\n"
   "{\n"
-  "  TEST_EQUAL(\"Hello, World!\", hello());\n"
+  "  TEST_ASSERT_EQUAL_STRING(\"Hello, World!\", hello());\n"
   "}\n"
   "\n"
   "int main(void)\n"
