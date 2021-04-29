@@ -16,6 +16,7 @@
 
 struct cli_config {
   const char *name;
+  int after_args;
 };
 
 // Command Line options parsing.
@@ -25,7 +26,13 @@ static struct cag_option options[] = {
     .access_letters = "nNpP",
     .access_name = "name",
     .value_name = "PROJECT_NAME",
-    .description = "[REQUIRED] Provide a name for the project."
+    .description = "[Optional]\n\n"
+                   "        "
+                   "Provide a name for the project.\n"
+                   "        "
+                   "A name is required, but it may be provided\n"
+                   "        "
+                   "by as a bare argument following all options.\n"
   },
   {
     .identifier = 'h',
@@ -80,8 +87,8 @@ enum CMAN_CMD {
 
 void usage()
 {
-  fputs("Usage: cman [OPTION]...\n", stderr);
-  fputs("Start sane C projects with ease!", stderr);
+  fputs("Usage: cman [OPTION]... <project-name>\n", stderr);
+  fputs("Start sane C projects with ease!\n\n", stderr);
   cag_option_print(options, CAG_ARRAY_SIZE(options), stderr);
 }
 
@@ -104,6 +111,7 @@ enum CMAN_CMD conf_init(struct cli_config *conf, int argc, char **argv)
       return CM_HELP;
     }
   }
+  conf->after_args = cag_option_get_index(&ctx);
   return CM_OK;
 }
 
@@ -120,6 +128,18 @@ int mk_project_dir(const char *name)
   return 0;
 }
 
+void post_process_args(struct cli_config *conf, int argc, char **argv)
+{
+  ASSERT_CLI_CONF_REF(conf);
+  if (conf->after_args >= argc) {
+    return;
+  }
+  if (!conf->name) {
+    conf->name = argv[conf->after_args];
+  }
+  return;
+}
+
 int main(int argc, char **argv)
 {
   struct cli_config cli_conf = { NULL };
@@ -133,6 +153,8 @@ int main(int argc, char **argv)
     usage();
     return EXIT_SUCCESS;
   }
+
+  post_process_args(&cli_conf, argc, argv);
 
   if (!cli_conf.name) {
     fputs("cman error: No project name provided!", stderr);
