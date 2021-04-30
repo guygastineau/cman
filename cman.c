@@ -1,6 +1,7 @@
 #include "src/test.h"
 #include "src/make.h"
 #include "src/lib.h"
+#include "src/files.h"
 #include "src/write_unity.h"
 
 #include "vendor/cargs/include/cargs.h"
@@ -198,9 +199,15 @@ int main(int argc, char **argv)
 
   free(test_name);
 
-  fprintf(stderr, "Writing library stubs... \n");
+  fputs("Writing library stubs...\n", stderr);
   if (write_lib(cli_conf.name)) {
     perror("Aborting... error writing library stubs");
+    return EXIT_FAILURE;
+  }
+
+  fputs("Writing various files, main.c, .gitignore, etc...\n", stderr);
+  if (write_files(cli_conf.name)) {
+    perror("Aborting... error writing various files.");
     return EXIT_FAILURE;
   }
 

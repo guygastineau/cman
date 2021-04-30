@@ -10,7 +10,7 @@
 static char file[1024];
 
 const char *main_contents =
-  "#include \"src/lib.h\"\n"
+  "#include \"src/%s.h\"\n"
   "\n"
   "#include <stdio.h>\n"
   "\n"
@@ -19,14 +19,14 @@ const char *main_contents =
   "\n"
   "int main()\n"
   "{\n"
-  "  printf(\"%s\n\", hello());\n"
+  "  printf(\"%s\\n\", hello());\n"
   "}\n";
 
 const char *gitignore =
   "/bin/\n"
   "/test/vendor/\n"
   "\n"
-  "# The prpject binary\n"
+  "# The project binary\n"
   "%s\n"
   "\n"
   "*.o\n"
@@ -55,12 +55,12 @@ int write_files(const char *project)
     return -1;
   }
   // Writ ethe header.
-  fprintf(dest, main_contents);
+  fprintf(dest, main_contents, project, "%s");
 
   // Clean up.
   fclose(dest);
 
-  // Wrtie .gitignore
+  // Write .gitignore
 
   if (snprintf(file, 1024, "%s/.gitignore", project) < 0) {
     return -1;
