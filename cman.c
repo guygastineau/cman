@@ -206,6 +206,5 @@ int main(int argc, char **argv)
 
   fputs("Done!\n", stderr);
 
-  free(test_name);
   return EXIT_SUCCESS;
 }
