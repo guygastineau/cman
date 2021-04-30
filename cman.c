@@ -1,5 +1,6 @@
 #include "src/test.h"
 #include "src/make.h"
+#include "src/lib.h"
 #include "src/write_unity.h"
 
 #include "vendor/cargs/include/cargs.h"
@@ -192,6 +193,14 @@ int main(int argc, char **argv)
   if (write_unity_files(testdir)) {
     perror("Aborting unity writing");
     free(test_name);
+    return EXIT_FAILURE;
+  }
+
+  free(test_name);
+
+  fprintf(stderr, "Writing library stubs... \n");
+  if (write_lib(cli_conf.name)) {
+    perror("Aborting... error writing library stubs");
     return EXIT_FAILURE;
   }
 
