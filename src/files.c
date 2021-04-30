@@ -23,11 +23,9 @@ const char *main_contents =
   "}\n";
 
 const char *gitignore =
-  "/bin/\n"
-  "/test/vendor/\n"
-  "\n"
-  "# The project binary\n"
+  "# Binaries\n"
   "%s\n"
+  "/bin/\n"
   "\n"
   "*.o\n"
   "*.a\n"
