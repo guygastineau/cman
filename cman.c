@@ -13,6 +13,10 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#define VERSION "0.1.0"
+#define AUTHORS "Guy Gastineau"
+#define LICENSE "BSD-3-Clause - https://opensource.org/licenses/BSD-3-Clause"
+
 #define ASSERT_CLI_CONF_REF(CONF) \
   assert((CONF) && "NULL pointer expected address of struct cli_config")
 
@@ -37,11 +41,18 @@ static struct cag_option options[] = {
                    "by as a bare argument following all options.\n"
   },
   {
+    .identifier = 'v',
+    .access_letters = "vV",
+    .access_name = "version",
+    .value_name = NULL,
+    .description = "Print cman software version.\n"
+  },
+  {
     .identifier = 'h',
     .access_letters = "hH?",
     .access_name = "help",
     .value_name = NULL,
-    .description = "Print cli help for cman."
+    .description = "Print cli help for cman.\n"
   }
 };
 
@@ -84,13 +95,28 @@ char *conf_get_test_name(struct cli_config *conf)
 }
 
 enum CMAN_CMD {
-  CM_OK, CM_HELP, CM_ERR
+  CM_OK, CM_VER, CM_HELP, CM_ERR
 };
+
+void version()
+{
+  fprintf(stderr,
+          "C MANager software version: %s\n"
+          "\n"
+          "  Authors: %s\n"
+          "  License: %s\n",
+          VERSION, AUTHORS, LICENSE);
+}
 
 void usage()
 {
-  fputs("Usage: cman [OPTION]... <project-name>\n", stderr);
-  fputs("Start sane C projects with ease!\n\n", stderr);
+  version();
+  fputs("\n"
+        "cman: Start sane C projects with ease!\n"
+        "--------------------------------------\n"
+        "Usage: cman [OPTION]... <project-name>\n"
+        "\n",
+        stderr);
   cag_option_print(options, CAG_ARRAY_SIZE(options), stderr);
 }
 
@@ -109,6 +135,8 @@ enum CMAN_CMD conf_init(struct cli_config *conf, int argc, char **argv)
     case 'n':
       conf->name = cag_option_get_value(&ctx);
       break;
+    case 'v':
+      return CM_VER;
     case 'h':
       return CM_HELP;
     }
@@ -151,6 +179,9 @@ int main(int argc, char **argv)
   case CM_ERR:
     fputs("Unexpected error processing command line arguments", stderr);
     return EXIT_FAILURE;
+  case CM_VER:
+    version();
+    return EXIT_SUCCESS;
   case CM_HELP:
     usage();
     return EXIT_SUCCESS;
