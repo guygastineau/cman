@@ -61,8 +61,8 @@ int write_lib(const char *project)
   }
 
   // Get upcased project name to use for header guard.
-  char *upper = string_upcase(project);
-  if (!upper) {
+  char *hname = to_header_name(project);
+  if (!hname) {
     fprintf(stderr,
             "cman error: internal error creating "
             "upper case string from '%s'\n",
@@ -77,11 +77,11 @@ int write_lib(const char *project)
     return -1;
   }
   // Writ ethe header.
-  fprintf(dest, lib_h_template, upper, upper, upper);
+  fprintf(dest, lib_h_template, hname, hname, hname);
 
   // Clean up.
   fclose(dest);
-  free(upper);
+  free(hname);
 
   // Now write the c file.
 

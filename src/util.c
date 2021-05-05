@@ -18,7 +18,7 @@ static size_t quick_copy(const char *from, char **dest)
     return 0;
   }
   // Copy the bytes;
-  memcpy(dest, from, len + 1);
+  memcpy(*dest, from, len + 1);
   return len;
 }
 
