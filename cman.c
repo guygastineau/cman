@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#define VERSION "0.1.1"
+#define VERSION "0.2.1"
 #define AUTHORS "Guy Gastineau"
 #define LICENSE "BSD-3-Clause - https://opensource.org/licenses/BSD-3-Clause"
 
