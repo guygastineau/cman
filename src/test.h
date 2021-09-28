@@ -3,6 +3,6 @@
 
 const char *mk_testdir(const char *root);
 
-int write_test(const char *testdir, const char *fname, const char *project);
+int write_tests(const char *testdir, const char *project);
 
 #endif // TEST_H

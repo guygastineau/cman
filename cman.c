@@ -215,7 +215,7 @@ int main(int argc, char **argv)
 
   fprintf(stderr, "Writing test file '%s/%s'...\n", testdir, test_name);
 
-  if (write_test(testdir, test_name, cli_conf.name)) {
+  if (write_tests(testdir, cli_conf.name)) {
     perror("Arborting test writing");
     free(test_name);
     return EXIT_FAILURE;

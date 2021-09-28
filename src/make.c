@@ -8,7 +8,7 @@
 static char file[DEST_SIZE];
 
 static const char *makefile =
-  "CC = gcc\n"
+  "CC = cc\n"
   "\n"
   "TARGET = %s\n"
   "\n"
