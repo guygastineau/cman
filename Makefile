@@ -6,6 +6,8 @@ LFLAGS =
 
 TARGET = cman
 
+PREFIX = /usr/bin
+
 all: cman
 	@echo "make all finished!"
 
@@ -23,6 +25,9 @@ cargs: $(CARGS_INCLUDE) $(CARGS_SRC)/cargs.c
 
 hex: hex.c
 	$(CC) $(CFLAGS) hex.c -o bin/hex
+
+install: cman
+	cp $(TARGET) $(PREFIX)/bin/
 
 clean:
 	@rm -rf *.o *.a *.out test_* cargs.* *.hex project
