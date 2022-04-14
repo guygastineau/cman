@@ -6,7 +6,7 @@ LFLAGS =
 
 TARGET = cman
 
-PREFIX = /usr/bin
+PREFIX := $(if $(PREFIX),$(PREFIX),/usr)
 
 all: cman
 	@echo "make all finished!"
